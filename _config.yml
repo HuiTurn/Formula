@@ -8,6 +8,7 @@ url: "https://formula.aipalnet.cn" # 自定义域名
 # Just the Docs 主题配置
 remote_theme: just-the-docs/just-the-docs
 plugins:
+  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
 
