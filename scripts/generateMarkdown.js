@@ -95,7 +95,7 @@ Object.keys(categorizedFormulas).forEach(grade => {
         markdown += `**公式**: \`${formula.formula}\`\n\n`;
         
         if (formula.latex) {
-          markdown += `**LaTeX**: \`${formula.latex}\`\n\n`;
+          markdown += `$$\n${formula.latex}\n$$\n\n`;
         }
         
         if (formula.variables && formula.variables.length > 0) {
