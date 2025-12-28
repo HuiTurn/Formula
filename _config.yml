@@ -1,8 +1,8 @@
 # Jekyll 配置文件
 # 使用 Just the Docs 主题（与 GitHub Pages 兼容性最好）
 
-title: Formula - 公式库
-description: 一个全面的全学科公式库，涵盖数学、物理、化学等多个学科
+title: Formula - 公式大全
+description: 一个全学科的公式大全仓库，涵盖数学、物理、化学等多个学科，按年级和学科分类整理，方便快速查找和学习。
 url: "https://formula.aipalnet.cn" # 自定义域名
 
 # Just the Docs 主题配置
@@ -22,7 +22,7 @@ search:
   previews: 3
   preview_words_before: 3
   preview_words_after: 3
-  tokenizer_separator: /[\s/]+/
+  tokenizer_separator: "/[\s/]+/"
   rel_url: true
   index_page: true
   index_html: false
