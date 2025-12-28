@@ -81,7 +81,7 @@ Object.keys(categorizedFormulas).forEach(grade => {
     // 生成markdown内容
     let markdown = `# ${grade} - ${category}\n\n`;
     markdown += `本文档包含 ${formulas.length} 个公式。\n\n`;
-    markdown += `[← 返回目录](../../README.md)\n\n`;
+    markdown += `[← 返回目录](/)\n\n`;
     markdown += `---\n\n`;
     
     // 按子分类组织
