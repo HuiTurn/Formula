@@ -40,7 +40,6 @@ math: true
 
 # 排除文件（不参与构建）
 exclude:
-  - README.md
   - LICENSE
   - node_modules
   - scripts

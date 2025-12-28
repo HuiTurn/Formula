@@ -1,3 +1,9 @@
+---
+layout: default
+title: Formula - 公式库
+nav_order: 1
+---
+
 # Formula - 公式库
 
 一个全面的全学科公式库，涵盖数学、物理、化学等多个学科，按年级和学科分类整理，方便快速查找和学习。
