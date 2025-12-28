@@ -22,7 +22,7 @@ search:
   previews: 3
   preview_words_before: 3
   preview_words_after: 3
-  tokenizer_separator: "/[\s/]+/"
+  tokenizer_separator: '/[\s/]+/'
   rel_url: true
   index_page: true
   index_html: false
