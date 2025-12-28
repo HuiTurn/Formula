@@ -1,0 +1,87 @@
+<!-- 处理代码块中的 LaTeX 公式 -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 等待 MathJax 加载完成
+    function processLaTeXBlocks() {
+      // 查找所有包含 "**LaTeX**:" 的段落
+      const paragraphs = document.querySelectorAll('p');
+      paragraphs.forEach(function(para) {
+        const text = para.textContent.trim();
+        if (text.startsWith('**LaTeX**:') || text.startsWith('LaTeX:')) {
+          // 查找段落中的代码块
+          const codeBlock = para.querySelector('code');
+          if (codeBlock) {
+            const latexCode = codeBlock.textContent.trim();
+            // 检查是否包含 LaTeX 命令
+            if (latexCode.includes('\\') || latexCode.includes('^') || latexCode.includes('_')) {
+              // 创建新的 div 来显示渲染后的公式
+              const mathContainer = document.createElement('div');
+              mathContainer.className = 'math-container';
+              mathContainer.style.marginTop = '10px';
+              mathContainer.style.marginBottom = '15px';
+              mathContainer.style.padding = '10px';
+              mathContainer.style.backgroundColor = '#f6f8fa';
+              mathContainer.style.borderRadius = '4px';
+              
+              // 创建显示原始 LaTeX 代码的部分（可选，用于调试）
+              const codeDisplay = document.createElement('code');
+              codeDisplay.style.display = 'block';
+              codeDisplay.style.marginBottom = '8px';
+              codeDisplay.style.fontSize = '0.9em';
+              codeDisplay.style.color = '#666';
+              codeDisplay.textContent = latexCode;
+              
+              // 创建 MathJax 渲染区域
+              const mathDisplay = document.createElement('div');
+              mathDisplay.className = 'math-display';
+              mathDisplay.style.textAlign = 'center';
+              // 使用 MathJax 的语法
+              mathDisplay.textContent = '$$' + latexCode + '$$';
+              
+              mathContainer.appendChild(codeDisplay);
+              mathContainer.appendChild(mathDisplay);
+              
+              // 在段落后插入
+              para.parentNode.insertBefore(mathContainer, para.nextSibling);
+            }
+          }
+        }
+      });
+      
+      // 重新渲染 MathJax
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise().catch(function(err) {
+          console.log('MathJax rendering error:', err);
+        });
+      }
+    }
+    
+    // 如果 MathJax 已加载，直接处理
+    if (window.MathJax) {
+      if (window.MathJax.startup) {
+        window.MathJax.startup.promise.then(processLaTeXBlocks);
+      } else {
+        setTimeout(processLaTeXBlocks, 1000);
+      }
+    } else {
+      // 等待 MathJax 加载
+      const checkMathJax = setInterval(function() {
+        if (window.MathJax) {
+          clearInterval(checkMathJax);
+          if (window.MathJax.startup) {
+            window.MathJax.startup.promise.then(processLaTeXBlocks);
+          } else {
+            setTimeout(processLaTeXBlocks, 1000);
+          }
+        }
+      }, 100);
+      
+      // 10秒后停止检查
+      setTimeout(function() {
+        clearInterval(checkMathJax);
+        processLaTeXBlocks();
+      }, 10000);
+    }
+  });
+</script>
+
