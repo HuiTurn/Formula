@@ -1,0 +1,43 @@
+---
+layout: default
+title: 404 - 页面未找到
+permalink: /404.html
+---
+
+<div style="text-align: center; padding: 60px 20px; max-width: 600px; margin: 0 auto;">
+  <h1 style="font-size: 72px; margin: 0; color: #0366d6;">404</h1>
+  <h2 style="margin-top: 20px; color: #586069;">页面未找到</h2>
+  <p style="margin-top: 20px; font-size: 16px; color: #586069; line-height: 1.6;">
+    抱歉，您访问的页面不存在。<br>
+    页面将在 <span id="countdown">3</span> 秒后自动跳转到主页。
+  </p>
+  <div style="margin-top: 40px;">
+    <a href="/" style="display: inline-block; padding: 12px 24px; background-color: #0366d6; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; transition: background-color 0.2s;">
+      立即返回主页
+    </a>
+  </div>
+</div>
+
+<script>
+  // 倒计时并自动跳转
+  let countdown = 3;
+  const countdownElement = document.getElementById('countdown');
+  
+  const timer = setInterval(function() {
+    countdown--;
+    if (countdownElement) {
+      countdownElement.textContent = countdown;
+    }
+    
+    if (countdown <= 0) {
+      clearInterval(timer);
+      window.location.href = '/';
+    }
+  }, 1000);
+  
+  // 如果3秒后还没跳转，强制跳转
+  setTimeout(function() {
+    window.location.href = '/';
+  }, 3000);
+</script>
+
