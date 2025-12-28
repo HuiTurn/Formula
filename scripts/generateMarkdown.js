@@ -90,12 +90,11 @@ Object.keys(categorizedFormulas).forEach(grade => {
       markdown += `## ${subCategory}\n\n`;
       
       subFormulas.forEach(formula => {
-        markdown += `### ${formula.name}\n\n`;
-        markdown += `**公式ID**: \`${formula.id}\`\n\n`;
-        markdown += `**公式**: \`${formula.formula}\`\n\n`;
+        markdown += `### ${formula.name}\n\n\n`;
+        markdown += `**公式**: \n\n`;
         
         if (formula.latex) {
-          markdown += `$$\n${formula.latex}\n$$\n\n`;
+          markdown += `$$\n${formula.latex}\n$$\n\n\n`;
         }
         
         if (formula.variables && formula.variables.length > 0) {
