@@ -1,6 +1,57 @@
 <!-- 处理代码块中的 LaTeX 公式 -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // 复制功能
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text);
+      } else {
+        // 降级方案：使用传统的复制方法
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          return Promise.resolve();
+        } catch (err) {
+          document.body.removeChild(textArea);
+          return Promise.reject(err);
+        }
+      }
+    }
+
+    // 创建复制按钮
+    function createCopyButton(codeBlock, latexCode) {
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.textContent = '复制 LaTeX';
+      copyButton.setAttribute('aria-label', '复制 LaTeX 代码');
+      
+      copyButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        copyToClipboard(latexCode).then(function() {
+          copyButton.textContent = '已复制！';
+          copyButton.classList.add('copied');
+          setTimeout(function() {
+            copyButton.textContent = '复制 LaTeX';
+            copyButton.classList.remove('copied');
+          }, 2000);
+        }).catch(function(err) {
+          console.error('复制失败:', err);
+          copyButton.textContent = '复制失败';
+          setTimeout(function() {
+            copyButton.textContent = '复制 LaTeX';
+          }, 2000);
+        });
+      });
+      
+      return copyButton;
+    }
+
     // 等待 MathJax 加载完成
     function processLaTeXBlocks() {
       // 查找所有包含 "**LaTeX**:" 的段落
@@ -10,39 +61,53 @@
         if (text.startsWith('**LaTeX**:') || text.startsWith('LaTeX:')) {
           // 查找段落中的代码块
           const codeBlock = para.querySelector('code');
-          if (codeBlock) {
+          if (codeBlock && !codeBlock.classList.contains('latex-code-block')) {
             const latexCode = codeBlock.textContent.trim();
             // 检查是否包含 LaTeX 命令
             if (latexCode.includes('\\') || latexCode.includes('^') || latexCode.includes('_')) {
-              // 创建新的 div 来显示渲染后的公式
-              const mathContainer = document.createElement('div');
-              mathContainer.className = 'math-container';
-              mathContainer.style.marginTop = '10px';
-              mathContainer.style.marginBottom = '15px';
-              mathContainer.style.padding = '10px';
-              mathContainer.style.backgroundColor = '#f6f8fa';
-              mathContainer.style.borderRadius = '4px';
+              // 保存原始代码块的父元素和位置
+              const parent = codeBlock.parentNode;
+              const nextSibling = codeBlock.nextSibling;
               
-              // 创建显示原始 LaTeX 代码的部分（可选，用于调试）
-              const codeDisplay = document.createElement('code');
-              codeDisplay.style.display = 'block';
-              codeDisplay.style.marginBottom = '8px';
-              codeDisplay.style.fontSize = '0.9em';
-              codeDisplay.style.color = '#666';
-              codeDisplay.textContent = latexCode;
+              // 创建新的代码块容器
+              const newCodeBlock = document.createElement('code');
+              newCodeBlock.className = 'latex-code-block';
+              newCodeBlock.setAttribute('data-latex', latexCode);
               
-              // 创建 MathJax 渲染区域
-              const mathDisplay = document.createElement('div');
-              mathDisplay.className = 'math-display';
-              mathDisplay.style.textAlign = 'center';
-              // 使用 MathJax 的语法
-              mathDisplay.textContent = '$$' + latexCode + '$$';
+              // 创建隐藏的源代码元素（用于复制）
+              const sourceElement = document.createElement('span');
+              sourceElement.className = 'latex-source';
+              sourceElement.textContent = latexCode;
               
-              mathContainer.appendChild(codeDisplay);
-              mathContainer.appendChild(mathDisplay);
+              // 创建渲染区域
+              const renderedElement = document.createElement('div');
+              renderedElement.className = 'latex-rendered';
+              // 使用 MathJax 的显示数学模式
+              renderedElement.textContent = '\\[' + latexCode + '\\]';
               
-              // 在段落后插入
-              para.parentNode.insertBefore(mathContainer, para.nextSibling);
+              // 创建复制按钮
+              const copyButton = createCopyButton(newCodeBlock, latexCode);
+              
+              // 组装元素
+              newCodeBlock.appendChild(sourceElement);
+              newCodeBlock.appendChild(renderedElement);
+              newCodeBlock.appendChild(copyButton);
+              
+              // 替换原始代码块
+              parent.replaceChild(newCodeBlock, codeBlock);
+              
+              // 拦截复制事件，确保复制的是 LaTeX 代码
+              newCodeBlock.addEventListener('copy', function(e) {
+                e.preventDefault();
+                if (e.clipboardData) {
+                  e.clipboardData.setData('text/plain', latexCode);
+                } else {
+                  // 降级方案
+                  copyToClipboard(latexCode).catch(function(err) {
+                    console.error('复制失败:', err);
+                  });
+                }
+              });
             }
           }
         }
