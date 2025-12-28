@@ -2,6 +2,7 @@
 layout: default
 title: Formula - 公式库
 nav_order: 1
+permalink: /
 ---
 
 # Formula - 公式库
