@@ -1,7 +1,6 @@
 ---
-layout: default
+layout: page
 title: Formula - 公式库
-nav_order: 1
 ---
 
 # Formula - 公式库
